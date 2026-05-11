@@ -1,11 +1,11 @@
 <?php
-require_once 'db_pgsql.php';
+require_once 'dbmysql.php';
 header('Content-Type: application/json');
 
 try {
-    $db = conectarDB();
+    $db = conectarMySQL();
     // Solo pedimos los IDs para que la carga inicial sea instantánea
-    $sql = "SELECT id FROM slider ORDER BY id DESC";
+    $sql = "SELECT id FROM imagenes ORDER BY id DESC";
     $stmt = $db->query($sql);
     $ids = $stmt->fetchAll(PDO::FETCH_ASSOC);
     echo json_encode($ids);

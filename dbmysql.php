@@ -1,13 +1,23 @@
 <?php
-$host = "localhost";
-$user = "ymedina";
-$pass = "123456789";
-$db   = "slider_db";
 
-// Conexión para MySQL
-$conexion = mysqli_connect($host, $user, $pass, $db);
+function conectarMySQL() {
+    $host = "localhost";
+    $dbname = "slider_db";
+    $usuario = "ymedina";
+    $password = "123456789";
 
-if (!$conexion) {
-    die("Error de conexión a MySQL: " . mysqli_connect_error());
+    try {
+        $conexion = new PDO(
+            "mysql:host=$host;dbname=$dbname;charset=utf8mb4",
+            $usuario,
+            $password
+        );
+
+        $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        return $conexion;
+
+    } catch (PDOException $e) {
+        die("Error de conexión: " . $e->getMessage());
+    }
 }
-?>

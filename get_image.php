@@ -1,38 +1,41 @@
 <?php
-require_once 'db_pgsql.php';
+// get_image.php CORREGIDO PARA MYSQL
 
-if (isset($_GET['id'])) {
-    try {
-        $db = conectarDB();
-        $stmt = $db->prepare("SELECT tipo, imagen FROM slider WHERE id = :id");
-        $stmt->execute(['id' => $_GET['id']]);
-        
-        // Usamos fetch normal para manejar mejor el buffer
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-        if ($row) {
-            $imagen = $row['imagen'];
-            $tipo = trim($row['tipo']);
+require_once 'dbmysql.php';
 
-            // Si es un recurso (LOB), lo leemos
-            if (is_resource($imagen)) {
-                $imagen = stream_get_contents($imagen);
-            }
-
-            // Limpieza de caracteres de escape de PostgreSQL si existen
-            if (strpos($imagen, '\\x') === 0) {
-                $imagen = pack('H*', substr($imagen, 2));
-            }
-
-            if (ob_get_length()) ob_clean();
-            
-            header("Content-Type: " . $tipo);
-            header("Content-Length: " . strlen($imagen)); // Ayuda al navegador a saber cuánto leer
-            echo $imagen;
-            exit;
-        }
-    } catch (Exception $e) {
-        header("HTTP/1.1 500 Internal Server Error");
-        echo $e->getMessage();
+try {
+    // Verificar ID
+    if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+        throw new Exception("ID inválido");
     }
+
+    $id = intval($_GET['id']);
+
+    // Conexión correcta
+    $db = conectarMySQL();
+
+    // Buscar imagen
+    $sql = "SELECT datos, extension FROM imagenes WHERE id = :id LIMIT 1";
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();
+
+    $imagen = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$imagen) {
+        throw new Exception("Imagen no encontrada");
+    }
+
+    // Tipo MIME correcto
+    header("Content-Type: " . $imagen['extension']);
+
+    // Mostrar imagen binaria
+    echo $imagen['datos'];
+
+} catch (Exception $e) {
+    http_response_code(500);
+    echo "Error: " . $e->getMessage();
 }

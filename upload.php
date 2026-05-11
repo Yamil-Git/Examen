@@ -20,7 +20,7 @@ try {
             }
 
             $datos = file_get_contents($tmp);
-            $db = conectarDB(); 
+            $db = conectarMySQL(); 
 
             // AJUSTE: Tabla 'imagenes' y columnas 'nombre', 'datos', 'extension'
             $sql = "INSERT INTO imagenes (nombre, datos, extension) VALUES (:nombre, :datos, :extension)";

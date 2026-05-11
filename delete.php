@@ -6,7 +6,7 @@ if (isset($_POST['id'])) {
     $id = $_POST['id'];
 
     try {
-        $db = conectarDB();
+        $db = conectarMySQL();
         
         // AJUSTE: Cambiamos la tabla 'slider' por 'imagenes'
         $sql = "DELETE FROM imagenes WHERE id = :id";

@@ -74,30 +74,21 @@
             100% { background-position: 0% 50%; }
         }
 
-	       .slider-container {
-	    position: relative;
-	    background-color: #161b22;
-	    border-radius: 20px;
-	    overflow: hidden;
-	    margin-bottom: 25px;
-	    height: 320px;
-	    display: flex;
-	    align-items: center;
-	    justify-content: center;
-	}
+        .slider-container {
+            position: relative;
+            background-color: #161b22;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 25px;
+            height: 320px;
+        }
+
         .slide-image {
             width: 100%;
             height: 100%;
             object-fit: cover;
             transition: opacity 0.5s ease;
         }
-
-	.slider-container button {
-    z-index: 999;
-    border: none;
-    cursor: pointer;
-    color: white;
-}
  .card-custom {
             background-color: #0d1117;
             border-radius: 20px;
@@ -157,34 +148,30 @@
 </head>
 
 <body>
- 
-<!-- PEGA ESTO JUSTO DESPUÉS DE <body> Y ANTES DE <main> -->
 
-<!-- SIDEBAR -->
-<nav class="sidebar">
-    <div class="flex items-center gap-3 mb-12 px-2">
-        <span class="font-extrabold text-2xl tracking-tighter italic text-white">
-            Yam<span class="text-fuchsia-500">.dev</span> ✨
-        </span>
-    </div>
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+        <div class="flex items-center gap-3 mb-12 px-2">
+            <span class="font-extrabold text-2xl tracking-tighter italic text-white">
+                Yam<span class="text-fuchsia-500">.dev</span> ✨
+            </span>
+        </div>
 
-    <div class="flex-1">
-        <a href="#" class="menu-item active"><i class="fas fa-home"></i> Inicio</a>
-        <a href="#" class="menu-item"><i class="fas fa-shield-halved"></i> Organismos</a>
-        <a href="#" class="menu-item"><i class="fas fa-file-code"></i> Normas y Estándares</a>
-        <a href="#" class="menu-item"><i class="fas fa-lock"></i> Protección de la Info</a>
-        <a href="#" class="menu-item"><i class="fas fa-chart-line"></i> Impacto Digital</a>
-        <a href="#" class="menu-item"><i class="fas fa-face-smile"></i> Sobre mí</a>
-        <a href="#" class="menu-item"><i class="fas fa-envelope"></i> Contacto</a>
-    </div>
+        <div class="flex-1">
+            <a href="#" class="menu-item active"><i class="fas fa-home"></i> Inicio</a>
+            <a href="#" class="menu-item"><i class="fas fa-shield-halved"></i> Organismos</a>
+            <a href="#" class="menu-item"><i class="fas fa-file-code"></i> Normas y Estándares</a>
+            <a href="#" class="menu-item"><i class="fas fa-lock"></i> Protección de la Info</a>
+            <a href="#" class="menu-item"><i class="fas fa-chart-line"></i> Impacto Digital</a>
+            <a href="#" class="menu-item"><i class="fas fa-face-smile"></i> Sobre mí</a>
+            <a href="#" class="menu-item"><i class="fas fa-envelope"></i> Contacto</a>
+        </div>
 
-    <div class="p-4 bg-white/5 rounded-xl border border-pink-500/20 text-center">
-        <p class="text-[10px] text-pink-400 font-bold uppercase tracking-widest">Ciberseguridad</p>
-        <p class="text-[11px] text-gray-500">Protección de Datos</p>
-    </div>
-</nav>
-
-
+        <div class="p-4 bg-white/5 rounded-xl border border-pink-500/20 text-center">
+            <p class="text-[10px] text-pink-400 font-bold uppercase tracking-widest">Ciberseguridad</p>
+            <p class="text-[11px] text-gray-500">Protección de Datos</p>
+        </div>
+    </nav>
 
     <!-- MAIN -->
     <main class="flex-1 p-12 overflow-y-auto">
@@ -194,20 +181,18 @@
             <h1 class="text-4xl font-extrabold mb-1 tracking-tight">Hello, Bienvenidos👋</h1>
             <p class="text-white/90 text-lg">by: Yamile Medina Hugo Malagon estuvo aqui :]</p>
         </header>
-<!-- REEMPLAZA SOLO ESTA PARTE EN TU CÓDIGO -->
+ <!-- SLIDER -->
+        <div class="slider-container" id="slider">
+            <img src="" class="slide-image">
 
-<!-- SLIDER -->
-<div class="slider-container" id="slider">
-    <img src="" class="slide-image">
+            <button onclick="prevSlide()" class="absolute top-1/2 left-5 -translate-y-1/2 bg-black/40 p-4 rounded-full">
+                <i class="fas fa-chevron-left"></i>
+            </button>
 
-    <button onclick="prevSlide()" type="button" class="absolute top-1/2 left-5 -translate-y-1/2 bg-black/40 p-4 rounded-full z-50 text-white">
-        <i class="fas fa-chevron-left"></i>
-    </button>
+            <button onclick="nextSlide()" class="absolute top-1/2 right-5 -translate-y-1/2 bg-black/40 p-4 rounded-full">
+            </button>
+        </div>
 
-    <button onclick="nextSlide()" type="button" class="absolute top-1/2 right-5 -translate-y-1/2 bg-black/40 p-4 rounded-full z-50 text-white">
-        <i class="fas fa-chevron-right"></i>
-    </button>
-</div>
         <!-- CARDS -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="card-custom">
@@ -237,6 +222,7 @@
 
         <!-- UPLOAD -->
         <section class="upload-section">
+            <div class="flex items-center gap-3 mb-6 justify-center">
                 <i class="fas fa-images text-pink-500"></i>
                 <h3 class="font-bold text-xl">Slider dinámico</h3>
             </div>

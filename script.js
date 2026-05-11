@@ -1,7 +1,7 @@
 let listaIds = [];
 let currentIndex = 0;
 
-// 1. Carga la lista de IDs (Esto ya confirmaste que funciona)
+// 1. Carga la lista de IDs
 async function cargarSlider() {
     try {
         const res = await fetch('slider.php');
@@ -19,16 +19,19 @@ async function cargarSlider() {
 
         const contenedor = document.getElementById('slider');
 
-        // Preparamos el HTML básico del slider
+        // Estructura del slider
         contenedor.innerHTML = `
             <div id="slide-container" style="width:100%; height:100%;"></div>
-            <div class="slider-controls">
-                <button class="arrow" onclick="prevSlide()">❮</button>
-                <button class="arrow" onclick="nextSlide()">❯</button>
-            </div>
+
+            <button class="absolute top-1/2 left-5 -translate-y-1/2 bg-black/40 p-4 rounded-full z-50 text-white" onclick="prevSlide()">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+
+            <button class="absolute top-1/2 right-5 -translate-y-1/2 bg-black/40 p-4 rounded-full z-50 text-white" onclick="nextSlide()">
+                <i class="fas fa-chevron-right"></i>
+            </button>
         `;
 
-        // Mostramos la primera imagen de la lista
         currentIndex = 0;
         mostrarImagen(listaIds[currentIndex].id);
 
@@ -38,28 +41,24 @@ async function cargarSlider() {
     }
 }
 
-// 2. Función clave: Usa la URL directa que te funcionó en el navegador
+// 2. Mostrar imagen
 function mostrarImagen(id) {
-    console.log("Cambiando imagen al ID: " + id);
-
     $.ajax({
-        // Llamamos a generar_visor.php y evitamos caché
         url: `generar_visor.php?id=${id}&t=${new Date().getTime()}`,
         cache: false,
 
         success: function(result) {
-            // Insertamos el resultado HTML en el contenedor
             $('#slide-container').html(result);
         },
 
         error: function(xhr, status, error) {
             console.error("Error AJAX:", error);
-            $('#slide-container').html('<p>Error al cargar el componente de imagen</p>');
+            $('#slide-container').html('<p>Error al cargar la imagen</p>');
         }
     });
 }
 
-// 3. Funciones de las flechas
+// 3. Flecha siguiente
 function nextSlide() {
     if (listaIds.length === 0) return;
 
@@ -67,6 +66,7 @@ function nextSlide() {
     mostrarImagen(listaIds[currentIndex].id);
 }
 
+// 4. Flecha anterior
 function prevSlide() {
     if (listaIds.length === 0) return;
 
@@ -74,27 +74,29 @@ function prevSlide() {
     mostrarImagen(listaIds[currentIndex].id);
 }
 
-// 4. Iniciar cuando cargue el DOM
+// 5. Al cargar página
 document.addEventListener("DOMContentLoaded", function() {
     cargarSlider();
 
-    // Vincular botón de subir imagen
     const botonSubir = document.querySelector(".btn-magenta");
 
     if (botonSubir) {
-        botonSubir.addEventListener("click", subirImagen);
+        // Evita doble ejecución
+        botonSubir.removeAttribute("onclick");
+
+        botonSubir.addEventListener("click", function() {
+            subirImagen();
+        });
     }
 });
 
-// 5. Función eliminar
+// 6. Eliminar imagen
 async function eliminarImagen(id) {
-    // 1. Preguntar al usuario para evitar borrar por error
     if (!confirm("¿Estás seguro de que deseas eliminar esta imagen?")) {
         return;
     }
 
     try {
-        // 2. Enviar el ID mediante una petición POST (AJAX)
         const formData = new FormData();
         formData.append('id', id);
 
@@ -109,11 +111,8 @@ async function eliminarImagen(id) {
 
         const resultado = await res.text();
 
-        // 3. Si se eliminó correctamente en la DB, actualizamos la vista
         if (resultado.includes("correctamente")) {
             alert(resultado);
-
-            // Refrescamos slider
             cargarSlider();
 
         } else {
@@ -121,20 +120,17 @@ async function eliminarImagen(id) {
         }
 
     } catch (error) {
-        console.error("Error en la petición de borrado:", error);
-        alert("No se pudo conectar con el servidor para eliminar.");
+        console.error("Error en borrado:", error);
+        alert("No se pudo eliminar.");
     }
 }
 
-// 6. Subir imagen
+// 7. Subir imagen
 function subirImagen() {
-
-    // IMPORTANTE:
-    // Tu HTML original usa id="fileInput"
     const fileInput = document.getElementById('fileInput');
 
     if (!fileInput) {
-        alert("No se encontró el input de archivo.");
+        alert("No se encontró el input.");
         return;
     }
 
@@ -145,23 +141,24 @@ function subirImagen() {
         return;
     }
 
-    // Validar formatos
-    const formatosPermitidos = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    const formatosPermitidos = [
+        'image/jpeg',
+        'image/png',
+        'image/gif',
+        'image/webp'
+    ];
 
     if (!formatosPermitidos.includes(file.type)) {
         alert("Formato no permitido. Usa JPG, PNG, GIF o WebP.");
         return;
     }
 
-    // Validar tamaño máximo 5MB
     if (file.size > 5 * 1024 * 1024) {
         alert("La imagen supera el máximo permitido de 5MB.");
         return;
     }
 
     const formData = new FormData();
-
-    // Debe coincidir con $_FILES['imagen']
     formData.append('imagen', file);
 
     fetch('upload.php', {
@@ -181,10 +178,9 @@ function subirImagen() {
         if (data.trim() === "OK") {
             alert("¡Imagen subida correctamente!");
 
-            // Limpiar input
             fileInput.value = "";
 
-            // Refrescar slider
+            // Recargar slider sin duplicar
             cargarSlider();
 
         } else {
@@ -197,18 +193,15 @@ function subirImagen() {
     });
 }
 
-// 7. Sidebar responsive
+// 8. Sidebar responsive
 function toggleSidebar() {
     const sidebar = document.getElementById("sidebar");
 
     if (!sidebar) return;
 
-    // Si la pantalla es pequeña (menor a 768px)
     if (window.innerWidth <= 768) {
         sidebar.classList.toggle("active");
-
     } else {
-        // En PC sigue funcionando como antes
         sidebar.classList.toggle("hidden");
     }
 }
